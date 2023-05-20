@@ -10,7 +10,6 @@ private:
     T *list;
     int amount;
     void resize(int amount); // изменения размера списка на 1 (+)
-    bool comp(T &r1, T &r2); // в мейн перекинуть
 public:
     container_list() = default; //конструктор по умолчанию (+)
     ~container_list() = default;//(+)
@@ -31,6 +30,7 @@ public:
     void remove_elem(int index); // удаление элемента списка по индексу (+)
     container_list<T> &combine(const container_list<T> &lst); //  объединение двух разных списков
     void sort(int (*comp)(const T &r1, const T &r2));
+     bool comp(T &r1, T &r2);
     int get_index(T elem)const;
     T* to_array();
     Iterator<T> begin();
@@ -77,32 +77,38 @@ container_list<T>::container_list(std::initializer_list<T> lst){
     }
 }
 
-
-
-// доделать лист на трай кетч
 template <typename T>
 container_list<T> &container_list<T>::operator=(const container_list<T> &lst){
-    list=new T[lst.amount]{};
-    amount=lst.amount;
-    for(int i=0; i<lst.amount;i++)
-        list[i]=lst.list[i];
-    return *this; // Возвращается ссылка на текущий объект (*this) для создания нескольких назначения выполнения в одном операторе
+    try{
+        list=new T[lst.amount]{};
+        amount=lst.amount;
+        int i=0;
+        for(int i=0; i<lst.amount;i++)
+            list[i]=lst.list[i];
+        return *this; // Возвращается ссылка на текущий объект (*this) для создания нескольких назначения выполнения в одном операторе
+    } catch (bad_alloc ex){
+        list=nullptr;
+        amount=0;
+        throw Exceptionlist("Not Memory");
+    }
 }
 template  <typename  T>
 void container_list<T>::resize(int amount){
     try {
         list =(T*)realloc(list,sizeof(T)*amount);
     }  catch (bad_alloc ex) {
+        list=nullptr;
+        amount=0;
         throw Exceptionlist("Bad realloc\n");
     }
 }
 template  <typename  T>
-container_list<T>::container_list(int length):amount(length){
+container_list<T>::container_list(int length){
     try {
         list=new T[length]{};
+        amount=length;
     } catch (bad_alloc) {
         Exceptionlist("bad allocation\n");
-
     }
 }
 template <typename T>
@@ -131,8 +137,6 @@ void container_list<T>::add_range(T *arr,int size){
      int tmp=amount-size;
      for(int i=tmp;i<amount;i++)
         list[i]=arr[i-tmp];
-
-
 }
 template <typename T>
 T& container_list<T>::get_elem(int index){
@@ -164,6 +168,7 @@ void container_list<T>::remove_elem(int index){
         for (int i = index; i < amount; i++)
             list[i] = list[i+1];
         amount--;
+        resize(amount);
     }
     else
         throw Exceptionlist(" - out of range!/n");
@@ -188,19 +193,19 @@ void container_list<T>::sort(int (*comp)(const T &r1, const T &r2)){
 }
 
 template<typename T>
-bool container_list<T>::comp(T &r1, T &r2){
-    return r1 < r2;
-}
-
-template<typename T>
 int container_list<T>::get_index(T elem) const{
+     int a = -1;
     for (int i = 0; i < amount; i++)
-        if (list[i] == elem)
-            return i;
-    return -1;
+        if (list[i] == elem){
+            a=i;
+            break;
+        }
+
+    return a;
 }
 
 template<typename T>
+//ljltkfnm
 T* container_list<T>::to_array(){
     T* new_array = new T[amount];
     for (size_t i = 0; i < amount; i++)

@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include <container_list.h>
+#include "container_list.h"
 
 using namespace std;
 
@@ -19,6 +19,9 @@ void test_array();
 void test_iterators();
 void test_inizalisation();
 void test_joke();
+
+template<typename T>
+bool comp(T &r1, T &r2);
 
 int main()
 {
@@ -326,4 +329,8 @@ void test_iterators(){
         cout << *a19 << " == " << *a20 << endl;}
     cout << "----------------------------------------------------------------------" << endl;
 }
-//пустой список
+
+template<typename T>
+bool container_list<T>::comp(T &r1, T &r2){
+    return r1 < r2;
+}
