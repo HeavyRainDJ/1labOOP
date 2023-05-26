@@ -37,7 +37,13 @@ public:
     Iterator<T> end();
 
 };
-
+template<typename T>
+T* container_list<T>::to_array(){
+    T* new_array = new T[amount];
+    for (size_t i = 0; i < amount; i++)
+        new_array[i] = list[i];
+    return new_array;
+}
 template  <typename  T>
 container_list<T>::container_list(const container_list <T> &lst){
     amount=lst.amount; // из лст берем амоунт
@@ -79,28 +85,20 @@ container_list<T>::container_list(std::initializer_list<T> lst){
 
 template <typename T>
 container_list<T> &container_list<T>::operator=(const container_list<T> &lst){
-    try{
-        list=new T[lst.amount]{};
-        amount=lst.amount;
-        int i=0;
-        for(int i=0; i<lst.amount;i++)
-            list[i]=lst.list[i];
-        return *this; // Возвращается ссылка на текущий объект (*this) для создания нескольких назначения выполнения в одном операторе
-    } catch (bad_alloc ex){
-        list=nullptr;
-        amount=0;
-        throw Exceptionlist("Not Memory");
-    }
+    *this=container_list<T>;
+    for(int i=0; i<lst.amount;i++)
+        list[i]=lst.list[i];
+    return *this; // Возвращается ссылка на текущий объект (*this) для создания нескольких назначения выполнения в одном операторе
 }
 template  <typename  T>
 void container_list<T>::resize(int amount){
-    try {
-        list =(T*)realloc(list,sizeof(T)*amount);
-    }  catch (bad_alloc ex) {
-        list=nullptr;
+    list =(T*)realloc(list,sizeof(T)*amount);
+    if(list==nullptr){
         amount=0;
-        throw Exceptionlist("Bad realloc\n");
+        throw Exceptionlist("Not realloced memory\n");
+
     }
+
 }
 template  <typename  T>
 container_list<T>::container_list(int length){
@@ -127,6 +125,7 @@ void container_list<T>::add_range(const container_list <T> &lst){
         list[i]=lst.list[i-tmp];
     }
 }
+
 template <typename T>
 void container_list<T>::add_range(T *arr,int size){
     if(size<0|| size*sizeof(T) <=sizeof(arr)){ // проверка размер отрицательным или размер массива (в байтах) меньше или равен размеру указателя arr.
@@ -176,8 +175,9 @@ void container_list<T>::remove_elem(int index){
 
 template<typename T>
 container_list<T>& container_list<T>::combine(const container_list<T>&lst){
-    this -> add_range(lst);
-    return *this;
+    container_list<int> local(*this);
+    local.add_range(lst);
+    return local;
 }
 
 template<typename T>
@@ -202,15 +202,6 @@ int container_list<T>::get_index(T elem) const{
         }
 
     return a;
-}
-
-template<typename T>
-//ljltkfnm
-T* container_list<T>::to_array(){
-    T* new_array = new T[amount];
-    for (size_t i = 0; i < amount; i++)
-        new_array[i] = list[i];
-    return new_array;
 }
 
 template<typename T>
