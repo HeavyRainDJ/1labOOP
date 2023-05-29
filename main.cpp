@@ -84,26 +84,33 @@ void test_base()
 void test_base_extra(){
     cout << "----------------------------" << endl;
     cout << "2) Extra test for base containter_list class" << endl;
-    container_list<int> a{};
-    cout << 2;
-    container_list<int> b;
-    cout << "1";
-    container_list<int> a2 =a;
-    container_list<int> a3 = std::move(a2);
-    cout << "1. a list 'a3' is moved from 'a2'" << endl;
-    cout << "Lenght  'a3' - " << a3.get_length() << endl;
-    cout << "elemets of list 'a3': " << endl;
-    for (int i = 0; i < a3.get_length(); i++)
-         cout << a3[i] << " ";
-    cout << endl;
-    container_list<int> a4{1,2,3,4,5};
-    a3 = std::move(a4);
-    cout << "1. a list 'a3' is moved from 'a2'" << endl;
-    cout << "Lenght  'a3' - " << a3.get_length() << endl;
-    cout << "elemets of list 'a3': " << endl;
-    for (int i = 0; i < a3.get_length(); i++)
-         cout << a3[i] << " ";
-    cout << endl;
+    try {
+        container_list<int> a{};
+        cout << 2;
+        container_list<int> b;
+        cout << "1";
+        container_list<int> a2 =a;
+        container_list<int> a3 = std::move(a2);
+        cout << "1. a list 'a3' is moved from 'a2'" << endl;
+        cout << "Lenght  'a3' - " << a3.get_length() << endl;
+        cout << "elemets of list 'a3': " << endl;
+        for (int i = 0; i < a3.get_length(); i++)
+            cout << a3[i] << " ";
+        cout << endl;
+        container_list<int> a4{1,2,3,4,5};
+
+        a3 = std::move(a4);
+        cout << "1. a list 'a3' is moved from 'a2'" << endl;
+        cout << "Lenght  'a3' - " << a3.get_length() << endl;
+        cout << "elemets of list 'a3': " << endl;
+        for (int i = 0; i < a3.get_length(); i++)
+            cout << a3[i] << " ";
+        cout << endl;
+
+    } catch (...) {
+        cout << "smth wrong";
+    }
+
     cout << "----------------------------" << endl;
 }
 void test_inizalisation(){

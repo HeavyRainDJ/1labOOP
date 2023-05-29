@@ -8,7 +8,7 @@ template <typename T>
 class container_list{
 private:
     T *list;
-    int amount;
+    int amount = 0;
     void resize(int amount); // изменения размера списка на 1 (+)
 public:
     container_list() = default; //конструктор по умолчанию (+)
@@ -85,11 +85,12 @@ container_list<T>::container_list(std::initializer_list<T> lst){
 
 template <typename T>
 container_list<T> &container_list<T>::operator=(const container_list<T> &lst){
-    *this=container_list<T>;
-    for(int i=0; i<lst.amount;i++)
-        list[i]=lst.list[i];
+    container_list<T> local(lst);
+    amount = local.amount;
+    list = local.list;
     return *this; // Возвращается ссылка на текущий объект (*this) для создания нескольких назначения выполнения в одном операторе
 }
+
 template  <typename  T>
 void container_list<T>::resize(int amount){
     list =(T*)realloc(list,sizeof(T)*amount);
@@ -175,9 +176,8 @@ void container_list<T>::remove_elem(int index){
 
 template<typename T>
 container_list<T>& container_list<T>::combine(const container_list<T>&lst){
-    container_list<int> local(*this);
-    local.add_range(lst);
-    return local;
+    this->add_range(lst);
+    return *this;
 }
 
 template<typename T>
@@ -200,7 +200,9 @@ int container_list<T>::get_index(T elem) const{
             a=i;
             break;
         }
-
+    if( a== -1){
+        throw Exceptionlist(" - out of range!/n");
+    }
     return a;
 }
 
